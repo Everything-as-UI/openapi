@@ -1,0 +1,22 @@
+---
+filter: true # generate only defined models
+accessLevel: internal
+imports: [Foundation]
+models:
+  UserResponse:
+    rename: User
+    filter: true # generate only defined properties
+    commentFiltered: true # render ignored properties as comment
+    conformances: [Codable, Equatable] # define custom conformances, default is `[Codable]`
+    properties:
+      username: {} # empty property config
+      uuid:
+        renameType: UUID # use UUID type instead of String
+  Repository:
+    conformances: [] # no conformances, custom decoding
+    properties:
+      organization:
+        optional: true # override API model
+      createdAt:
+        rename: createdDate
+  PullRequest: {}
