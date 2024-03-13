@@ -8,11 +8,8 @@
 import Foundation
 import CoreUI
 import SwiftLangUI
-import OpenAPIKit30
+import OpenAPIKit
 
-enum DocumentEnvironmentKey: EnvironmentKey {
-    static let defaultValue: OpenAPI.Document? = nil
-}
 enum PropertyNameResolverKey: EnvironmentKey {
     static var defaultValue: (_ key: String) -> String = { key in
         let camelizedKey = key.camelized
@@ -40,10 +37,6 @@ enum ConfigPropertyKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    var document: OpenAPI.Document? {
-        set { self[DocumentEnvironmentKey.self] = newValue }
-        get { self[DocumentEnvironmentKey.self] }
-    }
     var propertyNameResolver: (String) -> String {
         set { self[PropertyNameResolverKey.self] = newValue }
         get { self[PropertyNameResolverKey.self] }

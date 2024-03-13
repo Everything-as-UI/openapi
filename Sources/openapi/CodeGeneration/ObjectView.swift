@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import OpenAPIKit30
+import OpenAPIKit
 import CoreUI
 import DocumentUI
 import SwiftLangUI
@@ -14,6 +14,7 @@ import SwiftLangUI
 struct ObjectView: TextDocument {
     let typeName: String
     let object: JSONSchema.ObjectContext
+    let core: JSONSchema.CoreContext<JSONTypeFormat.ObjectFormat>
 
     @Environment(\.accessLevel)
     private var accessLevel
@@ -21,6 +22,8 @@ struct ObjectView: TextDocument {
     private var configModel
 
     var textBody: some TextDocument {
+        core.title.commented(.line(documented: true)).endingWithNewline()
+        core.description.commented(.line(documented: true)).endingWithNewline()
         TypeDecl(name: typeName, modifiers: [accessLevel, .struct], inherits: configModel.conformances).withBody {
             Properties(object: object)
             if object.properties.contains(where: { $0.hasPrefix("$") }) { // TODO: not only $
@@ -46,6 +49,7 @@ struct ObjectView: TextDocument {
             ForEach(object.properties, separator: .newline) { property in
                 let configProperty = configModel.properties[property.key, default: .default()]
                 let propertyName = configProperty.rename ?? ObjectView.propertyNameResolver(property.key)
+                property.value.coreContext?.title.commented(.line(documented: true)).endingWithNewline()
                 property.value.coreContext?.description.commented(.line(documented: true)).endingWithNewline()
                 if property.value.deprecated {
                     "@available(*, deprecated)".endingWithNewline()
@@ -54,14 +58,19 @@ struct ObjectView: TextDocument {
                 PropertyTypeView(schema: property.value, propertyName: propertyName)
                     .environment(\.configProperty, configProperty)
                 ifOptional(property.value, key: property.key, configProperty: configProperty)
-                IfUntypedObjectDeclView(schema: property.value, typeName: ObjectView.propertyNameResolver(property.key).startsUppercased()).startingWithNewline()
+                IfUntypedObjectDeclView(schema: property.value, typeName: ObjectView.propertyNameResolver(property.key).startsUppercased())
+                    .startingWithNewline()
             }
+            ForEach(configModel.customProperties, separator: .newline) { property in
+                "\(accessLevel) let " + property.key + ": "
+                property.value.renameType
+                property.value.optional.map { $0 ? "?" : "" }
+            }.startingWithNewline()
         }
 
         private func ifOptional(_ property: JSONSchema, key: String, configProperty: Config.Model.Property) -> String {
-            let isOptional = configProperty.optional ?? !object.requiredProperties.contains(key)
-            guard isOptional else { return "" }
-            return "?"
+            let isOptional = configProperty.optional ?? !object.requiredProperties.contains(key) || property.nullable
+            return isOptional ? "?" : ""
         }
     }
 

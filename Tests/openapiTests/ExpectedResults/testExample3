@@ -1,0 +1,18 @@
+// Generated using `openapi-generator`
+// DO NOT EDIT
+
+import Foundation
+public struct User: Codable {
+    public let username: String?
+    public let uuid: String?
+}
+public struct Repository: Codable {
+    public let slug: String?
+    public let owner: User?
+}
+public struct Pullrequest: Codable {
+    public let id: Int?
+    public let title: String?
+    public let repository: Repository?
+    public let author: User?
+}

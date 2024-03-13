@@ -1,0 +1,14 @@
+// Generated using `openapi-generator`
+// DO NOT EDIT
+
+import Foundation
+public struct Pet: Codable {
+    public let id: Int
+    public let name: String
+    public let tag: String?
+}
+public typealias Pets = [Pet]
+public struct Error: Codable {
+    public let code: Int
+    public let message: String
+}

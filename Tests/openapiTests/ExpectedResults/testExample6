@@ -1,0 +1,405 @@
+// Generated using `openapi-generator`
+// DO NOT EDIT
+
+import Foundation
+/// AccountResponse
+public struct AccountResponse: Codable {
+    /// Credentials
+    public let credentials: [Credential]
+    public let user: User
+    public let customer: Customer
+    public let usage: UserUsage
+}
+/// Algorithm
+public struct Algorithm: Codable {
+    /// Name
+    public let name: String
+    /// Description
+    public let description: String?
+    /// Features
+    public let features: [String: FeatureDoc]
+}
+/// AlgorithmResponse
+public struct AlgorithmResponse: Codable {
+    /// Algorithms
+    public let algorithms: [Algorithm]
+    /// Default
+    public let `default`: String
+    /// Best
+    public let best: String
+}
+/// Credential
+public struct Credential: Codable {
+    /// Id
+    public let id: Int
+    /// Customer Id
+    public let customerId: Int
+    /// Label
+    public let label: String?
+    /// Secret
+    public let secret: String
+    /// Chargebee Subscription Id
+    public let chargebeeSubscriptionId: String?
+    /// Created At
+    public let createdAt: String
+    /// Expires At
+    public let expiresAt: String?
+}
+/// Customer
+public struct Customer: Codable {
+    /// Id
+    public let id: Int
+    /// Name
+    public let name: String?
+    /// Chargebee Id
+    public let chargebeeId: String?
+    /// Created At
+    public let createdAt: String
+}
+/// DataCatalogModel
+public struct DataCatalogModel: Codable {
+    /// Datasets
+    public let datasets: [DatasetModel]
+    /// Current
+    public let current: [String]
+    /// Outdated
+    public let outdated: [String]
+    /// Index Stale
+    public let indexStale: Bool?
+}
+/// DatasetModel
+public struct DatasetModel: Codable {
+    /// Name
+    public let name: String
+    /// Title
+    public let title: String
+    /// Summary
+    public let summary: String?
+    /// Url
+    public let url: String?
+    /// Load
+    public let load: Bool
+    /// Entities Url
+    public let entitiesUrl: String?
+    /// Version
+    public let version: String
+    /// Index Version
+    public let indexVersion: String?
+    /// Index Current
+    public let indexCurrent: Bool?
+    /// Children
+    public let children: [String]
+}
+/// DateUsage
+public struct DateUsage: Codable {
+    /// Routes
+    public let routes: [RouteUsage]
+    /// Date
+    public let date: String
+    /// Total
+    public let total: Int
+}
+/// EntityExample
+public struct EntityExample: Codable {
+    /// Id
+    public let id: String?
+    /// Schema
+    public let schema: String
+    /// Properties
+    public let properties: [String: Properties]
+    public enum Properties: Codable {
+        case string(String)
+        case stringArray([String])
+    }
+}
+/// EntityMatchQuery
+public struct EntityMatchQuery: Codable {
+    /// Weights
+    public let weights: [String: Decimal]?
+    /// Queries
+    public let queries: [String: EntityExample]
+}
+/// EntityMatchResponse
+public struct EntityMatchResponse: Codable {
+    /// Responses
+    public let responses: [String: EntityMatches]
+    /// Matcher
+    public let matcher: [String: FeatureDoc]
+    /// Limit
+    public let limit: Int
+}
+/// EntityMatches
+public struct EntityMatches: Codable {
+    /// Status
+    public let status: Int?
+    /// Results
+    public let results: [ScoredEntityResponse]
+    public let total: TotalSpec
+    public let query: EntityExample
+}
+/// EntityResponse
+public struct EntityResponse: Codable {
+    /// Id
+    public let id: String
+    /// Caption
+    public let caption: String
+    /// Schema
+    public let schema: String
+    /// Properties
+    public let properties: [String: [Properties]]
+    public enum Properties: Codable {
+        case string(String)
+        case entityResponse(EntityResponse)
+    }
+    /// Datasets
+    public let datasets: [String]?
+    /// Referents
+    public let referents: [String]?
+    /// Target
+    public let target: Bool?
+    /// First Seen
+    public let firstSeen: String?
+    /// Last Seen
+    public let lastSeen: String?
+    /// Last Change
+    public let lastChange: String?
+}
+/// ErrorResponse
+public struct ErrorResponse: Codable {
+    /// Detail
+    public let detail: String
+}
+public struct Facet: RawRepresentable, Codable {
+    public let rawValue: String
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+    static let datasets = Self(rawValue: "datasets")
+    static let schema = Self(rawValue: "schema")
+    static let countries = Self(rawValue: "countries")
+    static let names = Self(rawValue: "names")
+    static let identifiers = Self(rawValue: "identifiers")
+    static let topics = Self(rawValue: "topics")
+    static let genders = Self(rawValue: "genders")
+}
+/*
+Documentation for a particular feature in the matching API model.
+ */
+/// FeatureDoc
+/// Documentation for a particular feature in the matching API model.
+public struct FeatureDoc: Codable {
+    /// Description
+    public let description: String?
+    /// Coefficient
+    public let coefficient: Decimal
+    /// Url
+    public let url: String
+}
+/// FreebaseManifest
+public struct FreebaseManifest: Codable {
+    /// Versions
+    public let versions: [String]
+    /// Name
+    public let name: String
+    /// Identifierspace
+    public let identifierSpace: String
+    /// Schemaspace
+    public let schemaSpace: String
+    public let view: FreebaseManifestView
+    public let preview: FreebaseManifestPreview
+    public let suggest: FreebaseManifestSuggest
+    /// Defaulttypes
+    public let defaultTypes: [FreebaseType]
+}
+/// FreebaseManifestPreview
+public struct FreebaseManifestPreview: Codable {
+    /// Url
+    public let url: String
+    /// Width
+    public let width: Int
+    /// Height
+    public let height: Int
+}
+/// FreebaseManifestSuggest
+public struct FreebaseManifestSuggest: Codable {
+    public let entity: FreebaseManifestSuggestType
+    public let type: FreebaseManifestSuggestType
+    public let property: FreebaseManifestSuggestType
+}
+/// FreebaseManifestSuggestType
+public struct FreebaseManifestSuggestType: Codable {
+    /// Service Url
+    public let serviceUrl: String
+    /// Service Path
+    public let servicePath: String
+}
+/// FreebaseManifestView
+public struct FreebaseManifestView: Codable {
+    /// Url
+    public let url: String
+}
+/// FreebaseType
+public struct FreebaseType: Codable {
+    /// Id
+    public let id: String
+    /// Name
+    public let name: String
+    /// Description
+    public let description: String?
+}
+/// HTTPValidationError
+public struct HTTPValidationError: Codable {
+    /// Detail
+    public let detail: [ValidationError]?
+}
+/// RouteUsage
+public struct RouteUsage: Codable {
+    /// Route
+    public let route: String
+    /// Count
+    public let count: Int
+}
+/// ScoredEntityResponse
+public struct ScoredEntityResponse: Codable {
+    /// Id
+    public let id: String
+    /// Caption
+    public let caption: String
+    /// Schema
+    public let schema: String
+    /// Properties
+    public let properties: [String: [Properties]]
+    public enum Properties: Codable {
+        case string(String)
+        case entityResponse(EntityResponse)
+    }
+    /// Datasets
+    public let datasets: [String]?
+    /// Referents
+    public let referents: [String]?
+    /// Target
+    public let target: Bool?
+    /// First Seen
+    public let firstSeen: String?
+    /// Last Seen
+    public let lastSeen: String?
+    /// Last Change
+    public let lastChange: String?
+    /// Score
+    public let score: Decimal?
+    /// Features
+    public let features: [String: Decimal]
+    /// Match
+    public let match: Bool?
+}
+/// SearchFacet
+public struct SearchFacet: Codable {
+    /// Label
+    public let label: String
+    /// Values
+    public let values: [SearchFacetItem]
+}
+/// SearchFacetItem
+public struct SearchFacetItem: Codable {
+    /// Name
+    public let name: String
+    /// Label
+    public let label: String
+    /// Count
+    public let count: Int?
+}
+/// SearchResponse
+public struct SearchResponse: Codable {
+    /// Limit
+    public let limit: Int
+    /// Offset
+    public let offset: Int?
+    public let total: TotalSpec
+    /// Results
+    public let results: [EntityResponse]
+    /// Facets
+    public let facets: [String: SearchFacet]
+}
+/// Statement
+public struct Statement: Codable {
+    /// Id
+    public let id: String
+    /// Entity Id
+    public let entityId: String
+    /// Canonical Id
+    public let canonicalId: String
+    /// Prop
+    public let prop: String
+    /// Prop Type
+    public let propType: String
+    /// Schema
+    public let schema: String
+    /// Value
+    public let value: String
+    /// Original Value
+    public let originalValue: String?
+    /// Dataset
+    public let dataset: String
+    /// Lang
+    public let lang: String?
+    /// Target
+    public let target: Bool
+    /// First Seen
+    public let firstSeen: String
+    /// Last Seen
+    public let lastSeen: String
+}
+/// StatementResponse
+public struct StatementResponse: Codable {
+    /// Limit
+    public let limit: Int
+    /// Offset
+    public let offset: Int?
+    public let total: TotalSpec
+    /// Results
+    public let results: [Statement]
+}
+/// TotalSpec
+public struct TotalSpec: Codable {
+    /// Value
+    public let value: Int
+    /// Relation
+    public let relation: String?
+}
+/// User
+public struct User: Codable {
+    /// Id
+    public let id: Int
+    /// Customer Id
+    public let customerId: Int
+    /// Sub
+    public let sub: String
+    /// Name
+    public let name: String?
+    /// Email
+    public let email: String
+    /// Created At
+    public let createdAt: String
+}
+/// UserUsage
+public struct UserUsage: Codable {
+    /// Dates
+    public let dates: [DateUsage]
+    /// Days
+    public let days: Int
+    /// Total
+    public let total: Int
+}
+/// ValidationError
+public struct ValidationError: Codable {
+    /// Location
+    public let loc: [Loc]
+    public enum Loc: Codable {
+        case string(String)
+        case int(Int)
+    }
+    /// Message
+    public let msg: String
+    /// Error Type
+    public let type: String
+}

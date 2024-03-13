@@ -1,0 +1,61 @@
+// Generated using `openapi-generator`
+// DO NOT EDIT
+
+import Foundation
+public struct Book: Codable {
+    public let abbrev: Abbrev
+    public struct Abbrev: Codable {
+        public let pt: String?
+        public let en: String?
+    }
+    public let author: String
+    public let chapters: Decimal
+    public let comment: String
+    public let group: String
+    public let name: String
+    public let testament: String
+    public let version: String?
+}
+public enum Chapter: Codable {
+    case case0(Case0)
+    public struct Case0: Codable {
+        public let number: Int
+        public let verses: Int
+    }
+    case int(Int)
+}
+public struct Verse: Codable {
+    public let book: Book
+    public struct Book: Codable {
+        public let id: String
+        public let abbrev: Abbrev
+        public struct Abbrev: Codable {
+            public let pt: String?
+            public let en: String?
+        }
+    }
+    public let chapter: Chapter
+    public let number: Decimal
+    public let text: String
+    public let version: String
+    public let comment: String?
+}
+public struct User: Codable {
+    public let name: String
+    public let email: String
+    public let password: String
+    public let token: String
+    public let notifications: Bool
+}
+public struct Version: Codable {
+    public let version: String
+    public let verses: Int
+}
+public struct SearchResponse: Codable {
+    public let occurrence: Int
+    public let version: String
+    public let verses: [Verse]
+}
+public struct RateLimitResponse: Codable {
+    public let msg: String
+}

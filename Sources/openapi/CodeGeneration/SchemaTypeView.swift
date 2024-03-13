@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import OpenAPIKit30
+import OpenAPIKit
 import CoreUI
 import DocumentUI
 import SwiftLangUI
@@ -17,8 +17,8 @@ struct SchemaTypeView: TextDocument {
     
     @Environment(\.accessLevel)
     private var accessLevel
-    @Environment(\.document)
-    private var document
+    @EnvironmentObject
+    private var document: OpenAPI.Document
     @Environment(\.configModel)
     private var configModel
     
@@ -32,9 +32,9 @@ struct SchemaTypeView: TextDocument {
             AllowedValuesTypeView(typeName: typeName, rawTypeName: "Int", context: coreContext)
         case .string(let coreContext, _):
             AllowedValuesTypeView(typeName: typeName, rawTypeName: "String", context: coreContext)
-        case .object(_, let objectContext):
+        case .object(let core, let objectContext):
             let filteredObject = configModel.filter ? objectContext.withFilteredProperties(from: configModel.properties) : nil
-            ObjectView(typeName: typeName, object: filteredObject ?? objectContext)
+            ObjectView(typeName: typeName, object: filteredObject ?? objectContext, core: core)
         case .array(let coreContext, let arrayContext):
             let item = arrayContext.items.map({
                 PropertyTypeView(schema: $0, propertyName: typeName.startsLowercased(), inArray: true).erased
@@ -62,7 +62,9 @@ struct SchemaTypeView: TextDocument {
         case .reference(let jSONReference, _):
             "\(accessLevel) typealias " + typeName + " = " + (jSONReference.name ?? "Any")
         case .fragment(let coreContext):
-            "\(accessLevel) typealias " + typeName + " = [String: String]" + (coreContext.nullable ? "?" : "") // TODO: empty object
+            "\(accessLevel) typealias " + typeName + " = [String: String]" + (coreContext.nullable ? "?" : "")
+        case .null:
+            "\(accessLevel) typealias " + typeName + " = NSNull"
         }
     }
 }
@@ -70,8 +72,8 @@ struct SchemaTypeView: TextDocument {
 struct PropertiesView: TextDocument {
     let schema: JSONSchema
 
-    @Environment(\.document)
-    private var document
+    @EnvironmentObject
+    private var document: OpenAPI.Document
 
     var textBody: some TextDocument {
         switch schema.value {
@@ -90,10 +92,10 @@ struct PropertiesView: TextDocument {
         case .any(_, _): unexpectedSchema("anyOf")
         case .not(_, _): unexpectedSchema("not")
         case .reference(let jSONReference, _):
-            document
-                .flatMap { try? $0.components.lookup(jSONReference) }
+            (try? document.components.lookup(jSONReference))
                 .map { PropertiesView(schema: $0).erased }
-        case .fragment(_): NullDocument()
+        case .fragment: NullDocument()
+        case .null: NullDocument()
         }
     }
 
@@ -106,8 +108,8 @@ struct PropertiesView: TextDocument {
 struct CodingKeysView: TextDocument {
     let schema: JSONSchema
 
-    @Environment(\.document)
-    private var document
+    @EnvironmentObject
+    private var document: OpenAPI.Document
 
     var textBody: some TextDocument {
         switch schema.value {
@@ -126,10 +128,10 @@ struct CodingKeysView: TextDocument {
         case .any(_, _): unexpectedSchema("anyOf")
         case .not(_, _): unexpectedSchema("not")
         case .reference(let jSONReference, _):
-            document
-                .flatMap { try? $0.components.lookup(jSONReference) }
+            (try? document.components.lookup(jSONReference))
                 .map { CodingKeysView(schema: $0).erased }
-        case .fragment(_): NullDocument()
+        case .fragment: NullDocument()
+        case .null: NullDocument()
         }
     }
 

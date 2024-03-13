@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import OpenAPIKit30
+import OpenAPIKit
 import CoreUI
 import DocumentUI
 import SwiftLangUI
@@ -36,7 +36,7 @@ struct TypesFileView: TextDocument {
                 let typeName = configModel?.rename ?? key.rawValue.startsUppercased()
                 schema.description.commented(.newLineBlock).endingWithNewline()
                 SchemaTypeView(schema: schema, typeName: typeName)
-                    .environment(\.document, document)
+                    .environmentObject(document)
                     .environment(\.configModel, configModel ?? .default())
                     .environment(\.accessLevel, accessLevel)
             }

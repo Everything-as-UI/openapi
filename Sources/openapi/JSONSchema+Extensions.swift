@@ -6,27 +6,7 @@
 //
 
 import Foundation
-import OpenAPIKit30
-
-extension JSONSchema.Schema {
-    
-    var isOptional: Bool {
-        switch self {
-        case .boolean(let coreContext): return coreContext.nullable
-        case .number(let coreContext, _): return coreContext.nullable
-        case .integer(let coreContext, _): return coreContext.nullable
-        case .string(let coreContext, _): return coreContext.nullable
-        case .object(let coreContext, _): return coreContext.nullable
-        case .array(let coreContext, _): return coreContext.nullable
-        case .all(_, let core): return core.nullable
-        case .one(_, let core): return core.nullable
-        case .any(_, let core): return core.nullable
-        case .not(_, _): return false
-        case .reference(_, _): return false
-        case .fragment(let coreContext): return coreContext.nullable
-        }
-    }
-}
+import OpenAPIKit
 
 extension JSONSchema {
     func needsCodingKeys(document: OpenAPI.Document?) -> Bool {
@@ -47,7 +27,8 @@ extension JSONSchema {
             return document
                 .flatMap { try? $0.components.lookup(jSONReference) }
                 .map { $0.needsCodingKeys(document: document) } ?? false
-        case .fragment(_): return false
+        case .fragment: return false
+        case .null: return false
         }
     }
 }
@@ -86,6 +67,7 @@ extension JSONSchema {
                 .flatMap { try? $0.components.lookup(jSONReference) }
                 .flatMap { $0.lookupDiscriminator(document: document) }
         case .fragment(let context): return context.discriminator
+        case .null(let context): return context.discriminator
         }
     }
 }
@@ -113,6 +95,7 @@ extension DereferencedJSONSchema {
         case .any(_, let context): return context.discriminator
         case .not(_, let context): return context.discriminator
         case .fragment(let context): return context.discriminator
+        case .null(let context): return context.discriminator
         }
     }
 }

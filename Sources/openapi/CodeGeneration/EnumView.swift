@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import OpenAPIKit30
+import OpenAPIKit
 import CoreUI
 import DocumentUI
 import SwiftLangUI

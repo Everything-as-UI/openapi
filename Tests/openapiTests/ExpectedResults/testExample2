@@ -1,0 +1,18 @@
+// Generated using `openapi-generator`
+// DO NOT EDIT
+
+import Foundation
+public struct DataSetList: Codable {
+    public let total: Int?
+    public let apis: [Apis]?
+    public struct Apis: Codable {
+        /// To be used as a dataset parameter value
+        public let apiKey: String?
+        /// To be used as a version parameter value
+        public let apiVersionNumber: String?
+        /// The URL describing the dataset's fields
+        public let apiUrl: String?
+        /// A URL to the API console for each API
+        public let apiDocumentationUrl: String?
+    }
+}

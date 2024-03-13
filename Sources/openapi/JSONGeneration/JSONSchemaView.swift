@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import OpenAPIKit30
+import OpenAPIKit
 import CoreUI
 import DocumentUI
 import SwiftLangUI
@@ -74,8 +74,10 @@ struct JSONSchemaView: TextDocument {
             JSONSchemaView(schema: of.randomElement() ?? of[0]).erased
         case .not(_, _):
             ""
-        case .fragment(_):
+        case .fragment:
             "{}"
+        case .null:
+            "null"
         }
     }
 }
@@ -129,7 +131,8 @@ struct JSONPropertiesView: TextDocument {
         case .one(_, _): unexpectedSchema("oneOf")
         case .any(_, _): unexpectedSchema("anyOf")
         case .not(_, _): unexpectedSchema("not")
-        case .fragment(_): NullDocument()
+        case .fragment: NullDocument()
+        case .null: unexpectedSchema("null")
         }
     }
 

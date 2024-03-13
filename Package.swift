@@ -33,9 +33,11 @@ let package = Package(
         .executableTarget(name: "openapi-generator", dependencies: ["openapi"]),
         .target(name: "openapi", dependencies: [
             .product(name: "OpenAPIKit30", package: "OpenAPIKit"),
+            .product(name: "OpenAPIKit", package: "OpenAPIKit"),
+            .product(name: "OpenAPIKitCompat", package: "OpenAPIKit"),
             .product(name: "SwiftLangUI", package: "SwiftLangUI"),
             .product(name: "Yams", package: "Yams")
         ]),
-        .testTarget(name: "openapiTests", dependencies: ["openapi"])
+        .testTarget(name: "openapiTests", dependencies: ["openapi", "OpenAPIKit"], resources: [.process("ExpectedResults")])
     ]
 )
