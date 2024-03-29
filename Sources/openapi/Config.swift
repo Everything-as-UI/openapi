@@ -9,7 +9,6 @@ import Foundation
 
 public struct Config: Codable {
     let filter: Bool
-    let obfuscatedStrings: Bool
     let accessLevel: String?
     let imports: [String]
     let models: [String: Model]
@@ -33,13 +32,12 @@ public struct Config: Codable {
 
 extension Config {
     static func `default`() -> Self {
-        Self(filter: false, obfuscatedStrings: false, accessLevel: nil, imports: [], models: [:])
+        Self(filter: false, accessLevel: nil, imports: [], models: [:])
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.filter = try container.decodeIfPresent(Bool.self, forKey: .filter) ?? false
-        self.obfuscatedStrings = try container.decodeIfPresent(Bool.self, forKey: .obfuscatedStrings) ?? false
         self.accessLevel = try container.decodeIfPresent(String.self, forKey: .accessLevel)
         self.imports = try container.decodeIfPresent([String].self, forKey: .imports) ?? []
         self.models = try container.decodeIfPresent([String: Config.Model].self, forKey: .models) ?? [:]

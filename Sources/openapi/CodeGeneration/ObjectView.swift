@@ -49,8 +49,8 @@ struct ObjectView: TextDocument {
             ForEach(object.properties, separator: .newline) { property in
                 let configProperty = configModel.properties[property.key, default: .default()]
                 let propertyName = configProperty.rename ?? ObjectView.propertyNameResolver(property.key)
-                property.value.coreContext?.title.commented(.line(documented: true)).endingWithNewline()
-                property.value.coreContext?.description.commented(.line(documented: true)).endingWithNewline()
+                property.value.coreContext.title.commented(.line(documented: true)).endingWithNewline()
+                property.value.coreContext.description.commented(.line(documented: true)).endingWithNewline()
                 if property.value.deprecated {
                     "@available(*, deprecated)".endingWithNewline()
                 }

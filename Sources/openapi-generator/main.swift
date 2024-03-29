@@ -20,7 +20,7 @@ let configUrl = CommandLine.arguments.firstIndex(of: "--config").map {
     CommandLine.arguments.remove(at: $0)
     return CommandLine.arguments.remove(at: $0)
 }.map(URL.init(fileURLWithPath:))
-let url = CommandLine.arguments.last.map(URL.init(fileURLWithPath:))
+let url = CommandLine.arguments.last.flatMap(URL.init(string:))
 
 guard let url else {
     print("can't access to file", url?.path ?? "")

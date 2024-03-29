@@ -31,7 +31,7 @@ struct RawRepresentableView: TextDocument {
                 "self.rawValue = rawValue"
             }.endingWithNewline()
             ForEach(enumerated: allowedValues, separator: .newline) { (i, value) in
-                "static let \(enumKey(for: value, index: i)) = Self(rawValue: \(enumValue(for: value) ?? "()"))"
+                "\(accessLevel) static let \(enumKey(for: value, index: i)) = Self(rawValue: \(enumValue(for: value) ?? "()"))"
             }
         }
     }

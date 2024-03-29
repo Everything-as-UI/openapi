@@ -61,6 +61,6 @@ public struct JSONSchemasGenerator {
 private func decode(from data: Data) throws -> DocumentV3_1 {
     OpenAPIKit.VendorExtensionsConfiguration.isEnabled = false
     let decoder = YAMLDecoder()
-    return try (try? decoder.decode(DocumentV3_0.self, from: data))?.to31()
+    return try (try? decoder.decode(DocumentV3_0.self, from: data))?.convert(to: .v3_1_0)
     ?? decoder.decode(DocumentV3_1.self, from: data)
 }

@@ -174,13 +174,13 @@ public struct Facet: RawRepresentable, Codable {
     public init(rawValue: String) {
         self.rawValue = rawValue
     }
-    static let datasets = Self(rawValue: "datasets")
-    static let schema = Self(rawValue: "schema")
-    static let countries = Self(rawValue: "countries")
-    static let names = Self(rawValue: "names")
-    static let identifiers = Self(rawValue: "identifiers")
-    static let topics = Self(rawValue: "topics")
-    static let genders = Self(rawValue: "genders")
+    public static let datasets = Self(rawValue: "datasets")
+    public static let schema = Self(rawValue: "schema")
+    public static let countries = Self(rawValue: "countries")
+    public static let names = Self(rawValue: "names")
+    public static let identifiers = Self(rawValue: "identifiers")
+    public static let topics = Self(rawValue: "topics")
+    public static let genders = Self(rawValue: "genders")
 }
 /*
 Documentation for a particular feature in the matching API model.
