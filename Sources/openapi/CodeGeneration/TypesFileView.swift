@@ -31,8 +31,9 @@ struct TypesFileView: TextDocument {
             separator: .newline
         ) { (key, schema) in
             let configModel = config.models[key.rawValue]
-            let accessLevel = (configModel?.accessLevel ?? config.accessLevel).flatMap(SwiftLangUI.Keyword.init(rawValue:)) ?? AccessLevelKey.defaultValue
-            if !config.filter || configModel != nil {
+            let accessLevel = (configModel?.accessLevel ?? config.accessLevel)
+                .flatMap(SwiftLangUI.Keyword.init(rawValue:)) ?? AccessLevelKey.defaultValue
+            if (!config.filter && !(schema.deprecated && config.omitDeprecated)) || configModel?.inlined == false {
                 let typeName = configModel?.rename ?? key.rawValue.startsUppercased()
                 schema.description.commented(.newLineBlock).endingWithNewline()
                 SchemaTypeView(schema: schema, typeName: typeName)

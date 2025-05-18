@@ -44,22 +44,26 @@ struct ObjectView: TextDocument {
         private var accessLevel
         @Environment(\.configModel)
         private var configModel
+        @Environment(\.config)
+        private var config
 
         var textBody: some TextDocument {
             ForEach(object.properties, separator: .newline) { property in
-                let configProperty = configModel.properties[property.key, default: .default()]
-                let propertyName = configProperty.rename ?? ObjectView.propertyNameResolver(property.key)
-                property.value.coreContext.title.commented(.line(documented: true)).endingWithNewline()
-                property.value.coreContext.description.commented(.line(documented: true)).endingWithNewline()
-                if property.value.deprecated {
-                    "@available(*, deprecated)".endingWithNewline()
+                if !(property.value.deprecated && config.omitDeprecated) {
+                    let configProperty = configModel.properties[property.key, default: .default()]
+                    let propertyName = configProperty.rename ?? ObjectView.propertyNameResolver(property.key)
+                    property.value.coreContext.title.commented(.line(documented: true)).endingWithNewline()
+                    property.value.coreContext.description.commented(.line(documented: true)).endingWithNewline()
+                    if property.value.deprecated {
+                        "@available(*, deprecated)".endingWithNewline()
+                    }
+                    "\(accessLevel) let " + propertyName + ": "
+                    PropertyTypeView(schema: property.value, propertyName: propertyName)
+                        .environment(\.configProperty, configProperty)
+                    ifOptional(property.value, key: property.key, configProperty: configProperty)
+                    IfUntypedObjectDeclView(schema: property.value, typeName: ObjectView.propertyNameResolver(property.key).startsUppercased())
+                        .startingWithNewline()
                 }
-                "\(accessLevel) let " + propertyName + ": "
-                PropertyTypeView(schema: property.value, propertyName: propertyName)
-                    .environment(\.configProperty, configProperty)
-                ifOptional(property.value, key: property.key, configProperty: configProperty)
-                IfUntypedObjectDeclView(schema: property.value, typeName: ObjectView.propertyNameResolver(property.key).startsUppercased())
-                    .startingWithNewline()
             }
             ForEach(configModel.customProperties, separator: .newline) { property in
                 "\(accessLevel) let " + property.key + ": "

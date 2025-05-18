@@ -17,6 +17,10 @@ struct IfUntypedObjectDeclView: TextDocument {
 
     @Environment(\.accessLevel)
     private var accessLevel
+    @Environment(\.config)
+    private var config
+    @EnvironmentObject<DocumentV3_1>
+    private var document
 
     var textBody: some TextDocument {
         switch schema.value {
@@ -36,6 +40,19 @@ struct IfUntypedObjectDeclView: TextDocument {
                 IfUntypedObjectDeclView(schema: withoutNull[0], typeName: typeName).erased
             } else {
                 NullDocument()
+            }
+        case .all(let of, _):
+            if of.count == 1 {
+                IfUntypedObjectDeclView(schema: of[0], typeName: typeName).erased
+            } else {
+                AllOfTypeView(typeName: typeName, of: of)
+            }
+        case .reference(let ref, _):
+            let configModel = ref.name.flatMap { config.models[$0] }
+            if let configModel, configModel.inlined {
+                let name = ref.name.map { configModel.rename ?? $0 }?.startsUppercased() ?? typeName
+                (try? document.components.lookup(ref))
+                    .map { IfUntypedObjectDeclView(schema: $0, typeName: name).erased }
             }
         default: NullDocument()
         }

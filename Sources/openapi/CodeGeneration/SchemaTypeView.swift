@@ -15,10 +15,12 @@ struct SchemaTypeView: TextDocument {
     let schema: JSONSchema
     let typeName: String
     
-    @Environment(\.accessLevel)
-    private var accessLevel
     @EnvironmentObject
     private var document: OpenAPI.Document
+    @Environment(\.accessLevel)
+    private var accessLevel
+    @Environment(\.config)
+    private var config
     @Environment(\.configModel)
     private var configModel
     
@@ -43,18 +45,7 @@ struct SchemaTypeView: TextDocument {
             "\(accessLevel) typealias " + typeName + " = " + arrayDecl
             arrayContext.items.map { IfUntypedObjectDeclView(schema: $0, typeName: typeName + "Item") }.startingWithNewline()
         case .all(let of, _):
-            TypeDecl(name: typeName, modifiers: [accessLevel, .struct], inherits: configModel.conformances).withBody {
-                ForEach(of, separator: .newline) { schema in
-                    PropertiesView(schema: schema)
-                }
-                if of.contains(where: { $0.needsCodingKeys(document: document) }) {
-                    TypeDecl(name: "CodingKeys", modifiers: [.private, .enum], inherits: ["String", "CodingKey"]).withBody {
-                        ForEach(of, separator: .newline) { schema in
-                            CodingKeysView(schema: schema)
-                        }
-                    }.startingWithNewline()
-                }
-            }
+            AllOfTypeView(typeName: typeName, of: of)
         case .one(let of, _), .any(let of, _):
             AssociatedEnumView(typeName: typeName, cases: of)
         case .not(_, _):
@@ -159,6 +150,33 @@ struct AllowedValuesTypeView: TextDocument {
             RawRepresentableView(typeName: typeName, rawTypeName: rawTypeName, allowedValues: context.allowedValues!)
         default:
             "\(accessLevel) typealias " + typeName + " = " + rawTypeName + (context.nullable ? "?" : "")
+        }
+    }
+}
+
+struct AllOfTypeView: TextDocument {
+    let typeName: String
+    let of: [JSONSchema]
+    
+    @EnvironmentObject
+    private var document: OpenAPI.Document
+    @Environment(\.accessLevel)
+    private var accessLevel
+    @Environment(\.configModel)
+    private var configModel
+    
+    var textBody: some TextDocument {
+        TypeDecl(name: typeName, modifiers: [accessLevel, .struct], inherits: configModel.conformances).withBody {
+            ForEach(of, separator: .newline) { schema in
+                PropertiesView(schema: schema)
+            }
+            if of.contains(where: { $0.needsCodingKeys(document: document) }) {
+                TypeDecl(name: "CodingKeys", modifiers: [.private, .enum], inherits: ["String", "CodingKey"]).withBody {
+                    ForEach(of, separator: .newline) { schema in
+                        CodingKeysView(schema: schema)
+                    }
+                }.startingWithNewline()
+            }
         }
     }
 }
